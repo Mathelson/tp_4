@@ -55,17 +55,17 @@ int returnAux = -1;
 static Node* getNode(LinkedList* this, int nodeIndex)
 {
     Node* pNode = NULL;
-    if(this!=NULL){
+    int i;
 
-
-           if(nodeIndex<=this->size && nodeIndex>-1){
-
-            pNode=*(this->pElement+nodeIndex);
-           }
-
+    if (this!=NULL && nodeIndex>=0 && nodeIndex < ll_len(this)){
+        for (i=0;i<=nodeIndex;i++){
+            if (i==0){
+                pNode = this->pFirstNode;
+            }else {
+                pNode = pNode->pNextNode;
+            }
         }
-
-
+    }
     return pNode;
 }
 
@@ -94,10 +94,51 @@ Node* test_getNode(LinkedList* this, int nodeIndex)
  */
 static int addNode(LinkedList* this, int nodeIndex,void* pElement)
 {
+
     int returnAux = -1;
+    Node* prev;
+    Node* next;
+    Node* nuevoNodo;
+
+    if( this != NULL)
+    {
+        if(nodeIndex >= 0 && nodeIndex <= ll_len(this))
+        {
+            nuevoNodo = (Node*)malloc(sizeof(Node));
+            if(nuevoNodo != NULL)
+            {
+                nuevoNodo->pElement = pElement;
+                nuevoNodo->pNextNode = NULL;
+
+                if(nodeIndex == 0)
+                {
+                    nuevoNodo->pNextNode = this->pFirstNode;
+                    this->pFirstNode = nuevoNodo;
+                }
+                else
+                {
+                    prev = this->pFirstNode;
+                    next = prev->pNextNode;
+
+                    while( nodeIndex > 1)
+                    {
+                        prev  = next;
+                        next  = prev->pNextNode;
+                        nodeIndex--;
+                    }
+
+                    prev->pNextNode = nuevoNodo;
+                    nuevoNodo->pNextNode = next;
+                }
+                this->size++;
+                returnAux = 0;
+            }
+        }
+    }
 
     return returnAux;
 }
+
 
 
 /** \brief Permite realizar el test de la funcion addNode la cual es privada
